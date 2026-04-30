@@ -978,18 +978,21 @@ function SocialLogin() {
       label: "Google",
       hover: "hover:border-white/30 hover:bg-white/[0.06]",
       icon: <GoogleIcon className="h-4 w-4" />,
+      enabled: process.env.NEXT_PUBLIC_AUTH_GOOGLE_ENABLED === "true",
     },
     {
       key: "discord",
       label: "Discord",
       hover: "hover:border-indigo-400/40 hover:bg-indigo-500/10",
       icon: <DiscordIcon className="h-4 w-4 text-indigo-300" />,
+      enabled: process.env.NEXT_PUBLIC_AUTH_DISCORD_ENABLED === "true",
     },
     {
       key: "github",
       label: "GitHub",
       hover: "hover:border-white/30 hover:bg-white/[0.06]",
       icon: <GithubIcon className="h-4 w-4 text-white" />,
+      enabled: process.env.NEXT_PUBLIC_AUTH_GITHUB_ENABLED === "true",
     },
   ];
 
@@ -1000,9 +1003,16 @@ function SocialLogin() {
           <button
             key={p.key}
             type="button"
-            onClick={() => signIn(p.key, { callbackUrl: "/dashboard" })}
-            title="OAuth aktif jika environment provider sudah dikonfigurasi"
-            className={`flex items-center justify-center gap-2 rounded-xl border border-white/10 bg-white/[0.03] py-2.5 text-xs font-semibold text-white/80 transition-all ${p.hover}`}
+            disabled={!p.enabled}
+            onClick={() => {
+              if (p.enabled) signIn(p.key, { callbackUrl: "/dashboard" });
+            }}
+            title={p.enabled ? "Login dengan provider ini" : "Provider ini belum dikonfigurasi"}
+            className={`flex items-center justify-center gap-2 rounded-xl border px-2 py-2.5 text-xs font-semibold transition-all ${
+              p.enabled
+                ? `border-white/10 bg-white/[0.03] text-white/80 ${p.hover}`
+                : "cursor-not-allowed border-white/10 bg-white/[0.02] text-white/35 opacity-70"
+            }`}
           >
             {p.icon}
             {p.label}
@@ -1010,7 +1020,7 @@ function SocialLogin() {
         ))}
       </div>
       <p className="text-center text-[11px] text-white/35">
-        OAuth Google/Discord/GitHub aktif setelah env provider di-set.
+        OAuth Google/Discord/GitHub siap dipakai setelah env provider + flag public di-set.
       </p>
     </div>
   );

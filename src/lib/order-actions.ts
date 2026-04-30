@@ -1,12 +1,13 @@
 "use server";
 
 import { redirect } from "next/navigation";
-import { desc, eq } from "drizzle-orm";
+import { and, desc, eq } from "drizzle-orm";
 
 import { auth } from "@/auth";
 import { db, orders } from "@/db";
-import { products } from "@/lib/data";
 import { checkoutSchema } from "@/lib/auth-schema";
+import { products } from "@/lib/data";
+import { createTripayQrisPayment } from "@/lib/payments";
 
 export type CheckoutResult =
   | { ok: true; orderNumber: string }
@@ -30,6 +31,14 @@ function makeOrderNumber() {
   return `NB-${stamp}-${rand}`;
 }
 
+function appUrl() {
+  return (
+    process.env.AUTH_URL ||
+    process.env.NEXT_PUBLIC_APP_URL ||
+    "http://localhost:3000"
+  ).replace(/\/$/, "");
+}
+
 export async function createCheckoutOrder(formData: FormData): Promise<CheckoutResult> {
   const session = await auth();
   if (!session?.user?.id) {
@@ -50,6 +59,18 @@ export async function createCheckoutOrder(formData: FormData): Promise<CheckoutR
   }
 
   const orderNumber = makeOrderNumber();
+  const baseUrl = appUrl();
+
+  const payment = await createTripayQrisPayment({
+    orderNumber,
+    productName: product.name,
+    amount: product.price,
+    customerName: session.user.name || null,
+    customerEmail: parsed.data.customerEmail,
+    callbackUrl: `${baseUrl}/api/payments/tripay/webhook`,
+    returnUrl: `${baseUrl}/orders/${orderNumber}`,
+    expiredAt: new Date(Date.now() + 24 * 60 * 60 * 1000),
+  });
 
   await db.insert(orders).values({
     orderNumber,
@@ -61,7 +82,17 @@ export async function createCheckoutOrder(formData: FormData): Promise<CheckoutR
     accountIdentifier: parsed.data.accountIdentifier || null,
     notes: parsed.data.notes || null,
     paymentMethod: parsed.data.paymentMethod,
+    paymentGateway: payment.gateway,
+    paymentReference: payment.reference,
+    paymentChannel: payment.channel,
+    paymentStatus: "pending",
+    paymentUrl: payment.paymentUrl || null,
+    qrString: payment.qrString || null,
+    qrImageUrl: payment.qrImageUrl || null,
+    expiredAt: payment.expiresAt || null,
+    gatewayPayload: JSON.stringify(payment.raw),
     status: "pending_payment",
+    updatedAt: new Date(),
   });
 
   return { ok: true, orderNumber };
@@ -77,4 +108,17 @@ export async function getCurrentUserOrders(limit = 20) {
     .where(eq(orders.userId, session.user.id))
     .orderBy(desc(orders.createdAt))
     .limit(limit);
+}
+
+export async function getCurrentUserOrderByNumber(orderNumber: string) {
+  const session = await auth();
+  if (!session?.user?.id) redirect(`/login?callbackUrl=/orders/${orderNumber}`);
+
+  const [order] = await db
+    .select()
+    .from(orders)
+    .where(and(eq(orders.userId, session.user.id), eq(orders.orderNumber, orderNumber)))
+    .limit(1);
+
+  return order || null;
 }

@@ -102,6 +102,16 @@ export const orders = sqliteTable("order", {
   accountIdentifier: text("account_identifier"),
   notes: text("notes"),
   paymentMethod: text("payment_method").notNull().default("qris"),
+  paymentGateway: text("payment_gateway").notNull().default("tripay"),
+  paymentReference: text("payment_reference").unique(),
+  paymentChannel: text("payment_channel").notNull().default("QRIS"),
+  paymentStatus: text("payment_status").notNull().default("unpaid"),
+  paymentUrl: text("payment_url"),
+  qrString: text("qr_string"),
+  qrImageUrl: text("qr_image_url"),
+  expiredAt: integer("expired_at", { mode: "timestamp_ms" }),
+  paidAt: integer("paid_at", { mode: "timestamp_ms" }),
+  gatewayPayload: text("gateway_payload"),
   status: text("status").notNull().default("pending_payment"),
   createdAt: integer("created_at", { mode: "timestamp_ms" })
     .notNull()
