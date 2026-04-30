@@ -1,0 +1,410 @@
+@import "tailwindcss";
+
+@layer base {
+  :root {
+    /* Base Colors - Deep navy/charcoal */
+    --background: 8 10 18;
+    --foreground: 245 247 255;
+    --muted: 40 45 60;
+    --muted-foreground: 160 168 185;
+    
+    /* Accent Colors - Electric blue/cyan primary */
+    --accent: 6 182 212;
+    --accent-blue: 37 99 235;
+    --accent-purple: 124 58 237;
+    --accent-pink: 236 72 153;
+    --accent-cyan: 6 182 212;
+    --accent-emerald: 16 185 129;
+    --accent-orange: 251 146 60;
+    --accent-red: 239 68 68;
+    
+    /* Semantic Colors */
+    --primary: var(--accent-cyan);
+    --secondary: var(--accent-blue);
+    --success: var(--accent-emerald);
+    --warning: var(--accent-orange);
+    --error: var(--accent-red);
+    
+    /* Glass Variants */
+    --glass-1: rgba(255, 255, 255, 0.02);
+    --glass-2: rgba(255, 255, 255, 0.04);
+    --glass-3: rgba(255, 255, 255, 0.06);
+    --glass-4: rgba(255, 255, 255, 0.08);
+    --glass-5: rgba(255, 255, 255, 0.10);
+    
+    /* Border Colors */
+    --border: rgba(255, 255, 255, 0.08);
+    --border-strong: rgba(255, 255, 255, 0.15);
+    --border-subtle: rgba(255, 255, 255, 0.05);
+    
+    /* Typography Scale */
+    --text-xs: 0.75rem;
+    --text-sm: 0.875rem;
+    --text-base: 1rem;
+    --text-lg: 1.125rem;
+    --text-xl: 1.25rem;
+    --text-2xl: 1.5rem;
+    --text-3xl: 1.875rem;
+    --text-4xl: 2.25rem;
+    --text-5xl: 3rem;
+    --text-6xl: 3.75rem;
+    
+    /* Spacing Scale */
+    --space-1: 0.25rem;
+    --space-2: 0.5rem;
+    --space-3: 0.75rem;
+    --space-4: 1rem;
+    --space-5: 1.25rem;
+    --space-6: 1.5rem;
+    --space-8: 2rem;
+    --space-10: 2.5rem;
+    --space-12: 3rem;
+    --space-16: 4rem;
+    --space-20: 5rem;
+    --space-24: 6rem;
+    --space-32: 8rem;
+    
+    /* Shadows */
+    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+    --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    --shadow-md: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+    --shadow-xl: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    --shadow-glow: 0 0 30px rgba(6, 182, 212, 0.3);
+    --shadow-glow-lg: 0 0 60px rgba(6, 182, 212, 0.4);
+    
+    /* Transitions */
+    --transition-fast: 150ms ease;
+    --transition-base: 250ms ease;
+    --transition-slow: 350ms ease;
+    --transition-spring: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  }
+
+  * {
+    @apply border-white/10;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    background: rgb(var(--background));
+    color: rgb(var(--foreground));
+    font-family: var(--font-inter), sans-serif;
+    font-optical-sizing: auto;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: rgba(var(--background), 0.5);
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: rgba(var(--accent), 0.5);
+    border-radius: 999px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: rgba(var(--accent), 0.7);
+  }
+
+  ::selection {
+    background: rgba(var(--accent), 0.3);
+    color: rgb(var(--foreground));
+  }
+
+  :focus-visible {
+    outline: 2px solid rgb(var(--accent));
+    outline-offset: 2px;
+  }
+}
+
+@layer utilities {
+  .gradient-text {
+    background: linear-gradient(135deg, rgb(var(--accent-cyan)), rgb(var(--accent-blue)));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .gradient-text-emerald {
+    background: linear-gradient(135deg, rgb(var(--accent-emerald)), rgb(var(--accent-cyan)));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .gradient-bg {
+    background: linear-gradient(135deg, rgb(var(--accent-cyan)), rgb(var(--accent-blue)));
+  }
+
+  .gradient-bg-radial {
+    background: radial-gradient(circle at 50% 50%, rgba(var(--accent-cyan), 0.12), transparent 70%);
+  }
+
+  .glass {
+    background: var(--glass-2);
+    backdrop-filter: blur(12px);
+    border: 1px solid var(--border);
+  }
+
+  .glass-strong {
+    background: var(--glass-3);
+    backdrop-filter: blur(16px);
+    border: 1px solid var(--border-strong);
+  }
+
+  .glass-subtle {
+    background: var(--glass-1);
+    backdrop-filter: blur(8px);
+    border: 1px solid var(--border-subtle);
+  }
+
+  .glow {
+    box-shadow: var(--shadow-glow);
+  }
+
+  .glow-lg {
+    box-shadow: var(--shadow-glow-lg);
+  }
+
+  .glow-accent {
+    box-shadow: 0 0 30px rgba(var(--accent), 0.3);
+  }
+
+  .glow-blue {
+    box-shadow: 0 0 30px rgba(var(--accent-blue), 0.3);
+  }
+
+  .animate-float {
+    animation: float 6s ease-in-out infinite;
+  }
+
+  .animate-pulse-slow {
+    animation: pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
+
+  .animate-slide-up {
+    animation: slideUp 0.5s ease-out;
+  }
+
+  .animate-fade-in {
+    animation: fadeIn 0.5s ease-out;
+  }
+
+  .animate-scale-in {
+    animation: scaleIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  }
+
+  .hover-lift {
+    transition: transform var(--transition-spring);
+  }
+
+  .hover-lift:hover {
+    transform: translateY(-4px);
+  }
+
+  .hover-scale {
+    transition: transform var(--transition-base);
+  }
+
+  .hover-scale:hover {
+    transform: scale(1.05);
+  }
+
+  .hover-glow {
+    transition: box-shadow var(--transition-base);
+  }
+
+  .hover-glow:hover {
+    box-shadow: var(--shadow-glow);
+  }
+
+  .btn-primary {
+    @apply px-6 py-3 rounded-xl font-medium text-white hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-xl;
+    background: linear-gradient(135deg, rgb(var(--accent-cyan)), rgb(var(--accent-blue)));
+  }
+
+  .btn-secondary {
+    @apply px-6 py-3 rounded-xl font-medium text-white border border-white/20 hover:border-white/30 hover:scale-105 transition-all duration-300;
+    background: var(--glass-2);
+    backdrop-filter: blur(12px);
+  }
+
+  .btn-ghost {
+    @apply px-6 py-3 rounded-xl font-medium text-white/70 hover:text-white hover:bg-white/10 transition-all duration-300;
+  }
+
+  .card-hover {
+    @apply transition-all duration-300 hover:scale-[1.02] hover:border-white/20;
+  }
+
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  .text-pretty {
+    text-wrap: pretty;
+  }
+
+  /* Animated mesh gradient — used as login page backdrop */
+  .mesh-bg {
+    background-image:
+      radial-gradient(at 18% 22%, rgba(6, 182, 212, 0.22) 0px, transparent 45%),
+      radial-gradient(at 82% 18%, rgba(37, 99, 235, 0.20) 0px, transparent 45%),
+      radial-gradient(at 78% 82%, rgba(124, 58, 237, 0.18) 0px, transparent 50%),
+      radial-gradient(at 22% 78%, rgba(16, 185, 129, 0.18) 0px, transparent 50%);
+    background-size: 200% 200%;
+    animation: meshShift 18s ease-in-out infinite;
+  }
+
+  /* Animated gradient stroke that loops */
+  .gradient-shimmer {
+    background-size: 200% 200%;
+    animation: gradientShimmer 4s ease infinite;
+  }
+
+  /* Floating label input wrapper — used by login form */
+  .float-input {
+    position: relative;
+  }
+
+  .float-input > input {
+    width: 100%;
+    border-radius: 1rem;
+    border: 1px solid rgba(255, 255, 255, 0.10);
+    background: rgba(255, 255, 255, 0.03);
+    padding: 1.4rem 1rem 0.55rem 2.65rem;
+    font-size: 0.9rem;
+    color: rgb(245, 247, 255);
+    transition: border-color 200ms ease, box-shadow 250ms ease,
+      background 200ms ease;
+  }
+
+  .float-input > input::placeholder {
+    color: transparent;
+  }
+
+  .float-input > input:focus {
+    outline: none;
+    border-color: rgba(6, 182, 212, 0.55);
+    background: rgba(255, 255, 255, 0.05);
+    box-shadow: 0 0 0 4px rgba(6, 182, 212, 0.10),
+      0 0 24px -4px rgba(6, 182, 212, 0.35);
+  }
+
+  .float-input > label {
+    position: absolute;
+    left: 2.65rem;
+    top: 1.05rem;
+    font-size: 0.8rem;
+    color: rgba(255, 255, 255, 0.42);
+    pointer-events: none;
+    transition: top 180ms ease, font-size 180ms ease, color 180ms ease,
+      transform 180ms ease;
+  }
+
+  .float-input > input:focus ~ label,
+  .float-input > input:not(:placeholder-shown) ~ label {
+    top: 0.45rem;
+    font-size: 0.65rem;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: rgba(6, 182, 212, 0.95);
+  }
+
+  .float-input > .field-icon {
+    position: absolute;
+    left: 0.95rem;
+    top: 1.1rem;
+    color: rgba(255, 255, 255, 0.4);
+    transition: color 200ms ease;
+    pointer-events: none;
+  }
+
+  .float-input > input:focus ~ .field-icon {
+    color: rgba(6, 182, 212, 0.95);
+  }
+
+  /* Reduce motion preference */
+  @media (prefers-reduced-motion: reduce) {
+    .mesh-bg,
+    .gradient-shimmer {
+      animation: none;
+    }
+  }
+}
+
+@keyframes meshShift {
+  0%, 100% {
+    background-position: 0% 0%;
+  }
+  25% {
+    background-position: 100% 0%;
+  }
+  50% {
+    background-position: 100% 100%;
+  }
+  75% {
+    background-position: 0% 100%;
+  }
+}
+
+@keyframes gradientShimmer {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
