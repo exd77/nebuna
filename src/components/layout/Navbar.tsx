@@ -7,8 +7,9 @@ import {
   useTransform,
 } from "framer-motion";
 import Link from "next/link";
-import { Menu, ShoppingCart, X, Search, Package, User } from "lucide-react";
+import { Menu, ShoppingCart, X, Search, Package, User, LogOut } from "lucide-react";
 import { useState } from "react";
+import { signOut, useSession } from "next-auth/react";
 
 const navLinks = [
   { label: "Produk", href: "/products" },
@@ -21,6 +22,8 @@ const navLinks = [
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+  const { data: session, status } = useSession();
+  const isLoggedIn = status === "authenticated" && !!session?.user;
   const { scrollY } = useScroll();
   const bgOpacity = useTransform(scrollY, [0, 100], [0, 1]);
   const bg = useMotionTemplate`rgba(8, 10, 18, ${bgOpacity})`;
@@ -84,13 +87,33 @@ export default function Navbar() {
               </span>
             </button>
 
-            <Link
-              href="/login"
-              className="hidden items-center gap-1.5 rounded-lg border border-white/10 px-3 py-1.5 text-sm text-white/70 transition-all hover:border-white/20 hover:text-white sm:flex"
-            >
-              <User className="h-4 w-4" />
-              Masuk
-            </Link>
+            {isLoggedIn ? (
+              <>
+                <Link
+                  href="/dashboard"
+                  className="hidden items-center gap-1.5 rounded-lg border border-cyan-400/20 bg-cyan-500/10 px-3 py-1.5 text-sm text-cyan-100 transition-all hover:border-cyan-300/40 hover:bg-cyan-500/15 sm:flex"
+                >
+                  <User className="h-4 w-4" />
+                  Dashboard
+                </Link>
+                <button
+                  type="button"
+                  onClick={() => signOut({ callbackUrl: "/" })}
+                  className="hidden items-center gap-1.5 rounded-lg border border-white/10 px-3 py-1.5 text-sm text-white/70 transition-all hover:border-red-400/30 hover:bg-red-500/10 hover:text-red-100 sm:flex"
+                >
+                  <LogOut className="h-4 w-4" />
+                  Keluar
+                </button>
+              </>
+            ) : (
+              <Link
+                href="/login"
+                className="hidden items-center gap-1.5 rounded-lg border border-white/10 px-3 py-1.5 text-sm text-white/70 transition-all hover:border-white/20 hover:text-white sm:flex"
+              >
+                <User className="h-4 w-4" />
+                Masuk
+              </Link>
+            )}
 
             <Link
               href="/products"
@@ -148,13 +171,35 @@ export default function Navbar() {
           </Link>
 
           <div className="flex gap-2 pt-2">
-            <Link
-              href="/login"
-              className="flex-1 rounded-xl border border-white/15 py-2.5 text-center text-sm font-medium text-white/80 transition-colors hover:border-white/25"
-              onClick={() => setIsOpen(false)}
-            >
-              Masuk
-            </Link>
+            {isLoggedIn ? (
+              <>
+                <Link
+                  href="/dashboard"
+                  className="flex-1 rounded-xl border border-cyan-400/25 bg-cyan-500/10 py-2.5 text-center text-sm font-medium text-cyan-100 transition-colors hover:border-cyan-300/40"
+                  onClick={() => setIsOpen(false)}
+                >
+                  Dashboard
+                </Link>
+                <button
+                  type="button"
+                  className="flex-1 rounded-xl border border-white/15 py-2.5 text-center text-sm font-medium text-white/80 transition-colors hover:border-red-400/30 hover:bg-red-500/10"
+                  onClick={() => {
+                    setIsOpen(false);
+                    signOut({ callbackUrl: "/" });
+                  }}
+                >
+                  Keluar
+                </button>
+              </>
+            ) : (
+              <Link
+                href="/login"
+                className="flex-1 rounded-xl border border-white/15 py-2.5 text-center text-sm font-medium text-white/80 transition-colors hover:border-white/25"
+                onClick={() => setIsOpen(false)}
+              >
+                Masuk
+              </Link>
+            )}
             <Link
               href="/products"
               className="flex-1 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 py-2.5 text-center text-sm font-medium text-white"

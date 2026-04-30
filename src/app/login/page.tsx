@@ -561,7 +561,7 @@ function LoginForm() {
           Ingat saya
         </label>
         <Link
-          href="#"
+          href="/forgot-password"
           className="text-cyan-400 transition-colors hover:text-cyan-300"
         >
           Lupa password?
@@ -583,6 +583,7 @@ function RegisterForm() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [errors, setErrors] = useState<FormErrors>({});
   const [pending, startTransition] = useTransition();
@@ -649,17 +650,30 @@ function RegisterForm() {
         required
       />
 
+      <PasswordField
+        id="confirm-password"
+        name="confirmPassword"
+        label="Konfirmasi Password"
+        value={confirmPassword}
+        onChange={setConfirmPassword}
+        show={showPassword}
+        toggleShow={() => setShowPassword((s) => !s)}
+        error={errors.fieldErrors?.confirmPassword?.[0]}
+        autoComplete="new-password"
+        required
+      />
+
       <PasswordStrengthBar password={password} />
 
       <FormErrorBanner message={errors.formError} />
 
       <p className="text-[11px] leading-relaxed text-white/45">
         Dengan mendaftar, kamu menyetujui{" "}
-        <Link href="#" className="text-cyan-400 hover:text-cyan-300">
+        <Link href="/terms" className="text-cyan-400 hover:text-cyan-300">
           Syarat &amp; Ketentuan
         </Link>{" "}
         dan{" "}
-        <Link href="#" className="text-cyan-400 hover:text-cyan-300">
+        <Link href="/privacy" className="text-cyan-400 hover:text-cyan-300">
           Kebijakan Privasi
         </Link>
         .
@@ -985,17 +999,24 @@ function SocialLogin() {
   ];
 
   return (
-    <div className="grid grid-cols-2 gap-2">
-      {providers.map((p) => (
-        <button
-          key={p.key}
-          type="button"
-          className={`flex items-center justify-center gap-2 rounded-xl border border-white/10 bg-white/[0.03] py-2.5 text-xs font-semibold text-white/80 transition-all ${p.hover}`}
-        >
-          {p.icon}
-          {p.label}
-        </button>
-      ))}
+    <div className="space-y-2">
+      <div className="grid grid-cols-2 gap-2">
+        {providers.map((p) => (
+          <button
+            key={p.key}
+            type="button"
+            disabled
+            title="Social login belum aktif"
+            className="flex cursor-not-allowed items-center justify-center gap-2 rounded-xl border border-white/10 bg-white/[0.02] py-2.5 text-xs font-semibold text-white/35 opacity-70 transition-all"
+          >
+            {p.icon}
+            {p.label}
+          </button>
+        ))}
+      </div>
+      <p className="text-center text-[11px] text-white/35">
+        Social login belum aktif — gunakan email dan password dulu.
+      </p>
     </div>
   );
 }

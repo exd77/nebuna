@@ -19,7 +19,7 @@ export default {
   callbacks: {
     authorized({ auth, request: { nextUrl } }) {
       const isLoggedIn = !!auth?.user;
-      const protectedPaths = ["/dashboard"];
+      const protectedPaths = ["/dashboard", "/account"];
       const isProtected = protectedPaths.some((p) =>
         nextUrl.pathname.startsWith(p),
       );
