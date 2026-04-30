@@ -1,178 +1,102 @@
 import Link from "next/link";
-import {
-  Globe,
-  Mail,
-  MessageCircle,
-  Package,
-  Camera,
-} from "lucide-react";
+import { Camera, Globe, Headphones, Mail, MessageCircle, Music2 } from "lucide-react";
 
-const productLinks = [
-  { label: "Netflix", href: "/products/netflix" },
-  { label: "YouTube Premium", href: "/products/youtube-premium" },
-  { label: "ChatGPT Plus", href: "/products/chatgpt-plus" },
-  { label: "Spotify", href: "/products/spotify" },
-  { label: "Canva", href: "/products/canva" },
-  { label: "GitHub Copilot", href: "/products/github-copilot-pro" },
+const infoLinks = [
+  { label: "Tentang Kami", href: "/blog" },
+  { label: "Cara Pembelian", href: "/#how-it-works" },
+  { label: "Syarat & Ketentuan", href: "/terms" },
+  { label: "Kebijakan Privasi", href: "/privacy" },
 ];
 
 const helpLinks = [
-  { label: "FAQ", href: "/#faq" },
-  { label: "Cara Kerja", href: "/#how-it-works" },
-  { label: "Lacak Pesanan", href: "/#trust" },
+  { label: "FAQ", href: "/#bantuan" },
   { label: "Hubungi Kami", href: "/login" },
+  { label: "Status Pesanan", href: "/account/orders" },
+  { label: "Refund & Garansi", href: "/terms" },
 ];
 
-const legalLinks = [
-  { label: "Kebijakan Privasi", href: "#" },
-  { label: "Syarat & Ketentuan", href: "#" },
-  { label: "Kebijakan Refund", href: "#" },
-  { label: "Tentang Kami", href: "#" },
-];
-
-const paymentBadges = [
-  "QRIS",
-  "BCA VA",
-  "Mandiri",
-  "GoPay",
-  "OVO",
-  "DANA",
-  "ShopeePay",
-];
+const payments = ["QRIS", "OVO", "DANA", "GoPay", "BCA", "Mandiri", "BRI", "BNI"];
 
 const socials = [
-  { icon: Globe, href: "#", label: "Website" },
-  { icon: Mail, href: "#", label: "Email" },
-  { icon: MessageCircle, href: "#", label: "WhatsApp" },
-  { icon: Camera, href: "#", label: "Instagram" },
+  { label: "Website", href: "#", icon: Globe },
+  { label: "TikTok", href: "#", icon: Music2 },
+  { label: "WhatsApp", href: "#", icon: MessageCircle },
+  { label: "Email", href: "#", icon: Mail },
+  { label: "Instagram", href: "#", icon: Camera },
 ];
 
 export default function Footer() {
   return (
-    <footer className="border-t border-white/5 bg-[rgb(6,8,16)] px-4 pt-16 pb-8 sm:px-6 lg:px-8">
-      <div className="mx-auto max-w-7xl">
-        <div className="grid grid-cols-1 gap-10 md:grid-cols-2 lg:grid-cols-4">
-          {/* Brand column */}
-          <div className="lg:col-span-1">
-            <Link
-              href="/"
-              className="mb-4 inline-flex items-center gap-2 text-xl font-bold"
-            >
-              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-cyan-500 to-blue-600">
-                <Package className="h-4 w-4 text-white" />
-              </div>
-              <span className="gradient-text">Nebuna Store</span>
-            </Link>
-            <p className="text-sm leading-relaxed text-white/50">
-              Marketplace langganan digital premium terpercaya di Indonesia.
-              Produk terverifikasi, aktivasi cepat, dan support 24/7.
-            </p>
-            <div className="mt-5 flex gap-2">
-              {socials.map((s) => (
-                <a
-                  key={s.label}
-                  href={s.href}
-                  aria-label={s.label}
-                  className="flex h-9 w-9 items-center justify-center rounded-lg border border-white/10 bg-white/5 text-white/50 transition-all hover:border-cyan-500/30 hover:bg-cyan-500/10 hover:text-cyan-300"
-                >
-                  <s.icon className="h-4 w-4" />
-                </a>
-              ))}
-            </div>
+    <footer className="relative z-10 border-t border-white/10 bg-[#0d0f10]/90">
+      <div className="mx-auto grid max-w-7xl gap-8 px-4 py-10 sm:px-6 md:grid-cols-2 lg:grid-cols-4 lg:px-8">
+        <div>
+          <div className="mb-3 flex items-baseline gap-2">
+            <span className="text-xl font-black uppercase text-[#ff6a3d]">Nebuna</span>
+            <span className="text-xl font-black uppercase tracking-[0.12em] text-white">Store</span>
           </div>
-
-          {/* Produk */}
-          <div>
-            <h4 className="mb-4 text-sm font-bold uppercase tracking-wider text-white/80">
-              Produk
-            </h4>
-            <ul className="space-y-2">
-              {productLinks.map((link) => (
-                <li key={link.label}>
-                  <Link
-                    href={link.href}
-                    className="text-sm text-white/50 transition-colors hover:text-cyan-300"
-                  >
-                    {link.label}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          {/* Bantuan */}
-          <div>
-            <h4 className="mb-4 text-sm font-bold uppercase tracking-wider text-white/80">
-              Bantuan
-            </h4>
-            <ul className="space-y-2">
-              {helpLinks.map((link) => (
-                <li key={link.label}>
-                  <Link
-                    href={link.href}
-                    className="text-sm text-white/50 transition-colors hover:text-cyan-300"
-                  >
-                    {link.label}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          {/* Legal */}
-          <div>
-            <h4 className="mb-4 text-sm font-bold uppercase tracking-wider text-white/80">
-              Legal
-            </h4>
-            <ul className="space-y-2">
-              {legalLinks.map((link) => (
-                <li key={link.label}>
-                  <Link
-                    href={link.href}
-                    className="text-sm text-white/50 transition-colors hover:text-cyan-300"
-                  >
-                    {link.label}
-                  </Link>
-                </li>
-              ))}
-            </ul>
+          <p className="max-w-xs text-sm leading-6 text-zinc-400">
+            Marketplace langganan digital premium yang cepat, aman, dan terpercaya buat user Indonesia yang mau checkout tanpa ribet.
+          </p>
+          <div className="mt-4 flex flex-wrap gap-2">
+            {socials.map(({ label, href, icon: Icon }) => (
+              <a
+                key={label}
+                href={href}
+                aria-label={label}
+                className="grid h-9 w-9 place-items-center rounded-full border border-white/10 text-zinc-300 transition hover:border-[#ff6a3d]/40 hover:text-[#ff6a3d]"
+              >
+                <Icon className="h-4 w-4" />
+              </a>
+            ))}
           </div>
         </div>
 
-        {/* Payment badges */}
-        <div className="mt-12 border-t border-white/5 pt-8">
-          <div className="flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
-            <div>
-              <div className="mb-2 text-[11px] font-semibold uppercase tracking-wider text-white/40">
-                Metode Pembayaran
-              </div>
-              <div className="flex flex-wrap gap-2">
-                {paymentBadges.map((badge) => (
-                  <span
-                    key={badge}
-                    className="rounded-md border border-white/10 bg-white/5 px-2.5 py-1 text-[11px] font-medium text-white/60"
-                  >
-                    {badge}
-                  </span>
-                ))}
-              </div>
-            </div>
-            <div className="text-[11px] text-white/40">
-              <span className="inline-flex items-center gap-1.5">
-                <span className="relative flex h-2 w-2">
-                  <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
-                  <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-500" />
-                </span>
-                Sistem online · 24/7
+        <div>
+          <h3 className="mb-3 text-xs font-black uppercase tracking-[0.16em] text-white">Informasi</h3>
+          <ul className="space-y-2 text-sm text-zinc-400">
+            {infoLinks.map((link) => (
+              <li key={link.label}>
+                <Link href={link.href} className="transition hover:text-white">
+                  {link.label}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        <div>
+          <h3 className="mb-3 text-xs font-black uppercase tracking-[0.16em] text-white">Bantuan</h3>
+          <ul className="space-y-2 text-sm text-zinc-400">
+            {helpLinks.map((link) => (
+              <li key={link.label}>
+                <Link href={link.href} className="transition hover:text-white">
+                  {link.label}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        <div>
+          <h3 className="mb-3 text-xs font-black uppercase tracking-[0.16em] text-white">Pembayaran Aman</h3>
+          <div className="grid grid-cols-4 gap-2">
+            {payments.map((payment) => (
+              <span
+                key={payment}
+                className="rounded-lg border border-white/10 bg-white/[0.03] px-2 py-2 text-center text-xs font-bold text-zinc-300"
+              >
+                {payment}
               </span>
-            </div>
+            ))}
+          </div>
+          <div className="mt-5 flex items-center gap-2 text-sm text-zinc-400">
+            <Headphones className="h-4 w-4 text-[#ff6a3d]" />
+            Support 24/7 untuk bantu order & after-sales.
           </div>
         </div>
-
-        {/* Copyright */}
-        <div className="mt-8 border-t border-white/5 pt-6 text-center text-xs text-white/30">
-          © {new Date().getFullYear()} Nebuna Store. All rights reserved.
-        </div>
+      </div>
+      <div className="border-t border-white/10 py-5 text-center text-sm text-zinc-500">
+        © {new Date().getFullYear()} Nebuna Store. All rights reserved.
       </div>
     </footer>
   );

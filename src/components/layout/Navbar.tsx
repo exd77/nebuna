@@ -1,192 +1,177 @@
 "use client";
 
-import {
-  motion,
-  useMotionTemplate,
-  useScroll,
-  useTransform,
-} from "framer-motion";
 import Link from "next/link";
-import { Menu, ShoppingCart, X, Search, Package, User, LogOut } from "lucide-react";
-import { useState } from "react";
+import { Menu, Search, ShoppingCart, User, X, LogOut } from "lucide-react";
+import { useMemo, useState } from "react";
 import { signOut, useSession } from "next-auth/react";
+import { usePathname, useRouter } from "next/navigation";
+
+import { cn } from "@/lib/utils";
 
 const navLinks = [
-  { label: "Produk", href: "/products" },
+  { label: "Beranda", href: "/#home" },
   { label: "Kategori", href: "/#categories" },
   { label: "Promo", href: "/#promo" },
-  { label: "Cara Kerja", href: "/#how-it-works" },
-  { label: "FAQ", href: "/#faq" },
+  { label: "Bantuan", href: "/#bantuan" },
 ];
 
 export default function Navbar() {
-  const [isOpen, setIsOpen] = useState(false);
-  const [searchQuery, setSearchQuery] = useState("");
+  const pathname = usePathname();
+  const router = useRouter();
   const { data: session, status } = useSession();
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const [query, setQuery] = useState("");
+
   const isLoggedIn = status === "authenticated" && !!session?.user;
-  const { scrollY } = useScroll();
-  const bgOpacity = useTransform(scrollY, [0, 100], [0, 1]);
-  const bg = useMotionTemplate`rgba(8, 10, 18, ${bgOpacity})`;
+  const isHome = pathname === "/";
+
+  const activeLabel = useMemo(() => (isHome ? "Beranda" : ""), [isHome]);
+
+  const handleSearch = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const search = query.trim();
+    router.push(search ? `/products?search=${encodeURIComponent(search)}` : "/products");
+    setMobileOpen(false);
+  };
 
   return (
-    <motion.header
-      style={{ backgroundColor: bg }}
-      className="fixed top-0 right-0 left-0 z-50 border-b border-white/5 backdrop-blur-xl transition-all duration-300"
-    >
-      <div className="mx-auto h-16 max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="flex h-full items-center justify-between gap-4">
-          {/* Logo */}
-          <Link href="/" className="flex shrink-0 items-center gap-2 text-xl font-bold">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-cyan-500 to-blue-600">
-              <Package className="h-4 w-4 text-white" />
-            </div>
-            <span className="gradient-text">Nebuna Store</span>
-          </Link>
+    <header className="fixed inset-x-0 top-0 z-50 border-b border-white/10 bg-[#0d0f10]/88 backdrop-blur-xl">
+      <div className="mx-auto flex h-20 max-w-7xl items-center gap-4 px-4 sm:px-6 lg:px-8">
+        <Link href="/" className="mr-2 flex items-baseline gap-2">
+          <span className="text-2xl font-black uppercase tracking-tight text-[#ff6a3d]">Nebuna</span>
+          <span className="text-2xl font-black uppercase tracking-[0.12em] text-white">Store</span>
+        </Link>
 
-          {/* Search Bar - Desktop */}
-          <div className="hidden flex-1 items-center md:flex max-w-md mx-4">
-            <div className="relative w-full">
-              <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-white/40" />
-              <input
-                type="text"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Cari Netflix, ChatGPT, Canva..."
-                className="w-full rounded-lg border border-white/10 bg-white/5 py-2 pl-10 pr-4 text-sm text-white placeholder:text-white/30 focus:border-cyan-500/50 focus:outline-none focus:ring-1 focus:ring-cyan-500/30 transition-all"
-              />
-            </div>
-          </div>
+        <nav className="hidden items-center gap-7 lg:flex">
+          {navLinks.map((link) => {
+            const active = link.label === activeLabel;
+            return (
+              <Link
+                key={link.href}
+                href={link.href}
+                className={cn(
+                  "relative py-2 text-xs font-black uppercase tracking-[0.15em] transition hover:text-[#ff6a3d] after:absolute after:inset-x-0 after:-bottom-1 after:h-0.5 after:origin-left after:rounded-full after:bg-[#ff6a3d] after:transition-transform",
+                  active
+                    ? "text-[#ff6a3d] after:scale-x-100"
+                    : "text-zinc-300 after:scale-x-0 hover:after:scale-x-100",
+                )}
+              >
+                {link.label}
+              </Link>
+            );
+          })}
+        </nav>
 
-          {/* Nav Links - Desktop */}
-          <nav className="hidden items-center gap-5 lg:flex">
+        <form onSubmit={handleSearch} className="relative ml-auto hidden min-w-[280px] max-w-md flex-1 lg:block">
+          <Search className="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-zinc-500" />
+          <input
+            value={query}
+            onChange={(event) => setQuery(event.target.value)}
+            placeholder="Cari Netflix, ChatGPT, Canva..."
+            className="nebuna-input py-3 pl-11 pr-4 text-sm"
+          />
+        </form>
+
+        <div className="flex items-center gap-2">
+          {isLoggedIn ? (
+            <Link
+              href="/dashboard"
+              className="hidden rounded-xl border border-[#ff6a3d]/35 bg-[#ff6a3d]/10 px-4 py-2 text-xs font-black uppercase tracking-[0.12em] text-white transition hover:border-[#ff6a3d]/60 sm:inline-flex"
+            >
+              Dashboard
+            </Link>
+          ) : (
+            <Link
+              href="/login"
+              className="hidden rounded-xl border border-white/10 px-4 py-2 text-xs font-black uppercase tracking-[0.12em] text-zinc-200 transition hover:border-[#ff6a3d]/40 hover:text-white sm:inline-flex"
+            >
+              Masuk
+            </Link>
+          )}
+
+          <button
+            type="button"
+            className="hidden rounded-xl border border-white/10 p-3 text-zinc-300 transition hover:text-white md:inline-flex"
+            aria-label="Akun"
+          >
+            <User className="h-5 w-5" />
+          </button>
+
+          <button
+            type="button"
+            className="relative rounded-xl border border-white/10 p-3 text-zinc-300 transition hover:text-white"
+            aria-label="Keranjang"
+          >
+            <ShoppingCart className="h-5 w-5" />
+            <span className="absolute -right-1.5 -top-1.5 grid h-5 min-w-5 place-items-center rounded-full bg-[#ff6a3d] px-1 text-[10px] font-black text-white">
+              1
+            </span>
+          </button>
+
+          {isLoggedIn && (
+            <button
+              type="button"
+              onClick={() => signOut({ callbackUrl: "/" })}
+              className="hidden rounded-xl border border-white/10 p-3 text-zinc-300 transition hover:border-red-400/30 hover:text-red-200 md:inline-flex"
+              aria-label="Keluar"
+            >
+              <LogOut className="h-5 w-5" />
+            </button>
+          )}
+
+          <button
+            type="button"
+            onClick={() => setMobileOpen((value) => !value)}
+            className="rounded-xl border border-white/10 p-3 text-zinc-300 lg:hidden"
+            aria-label="Toggle menu"
+          >
+            {mobileOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+          </button>
+        </div>
+      </div>
+
+      {mobileOpen && (
+        <div className="border-t border-white/10 px-4 pb-4 lg:hidden">
+          <form onSubmit={handleSearch} className="relative mt-4">
+            <Search className="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-zinc-500" />
+            <input
+              value={query}
+              onChange={(event) => setQuery(event.target.value)}
+              placeholder="Cari Netflix, ChatGPT, Canva..."
+              className="nebuna-input py-3 pl-11 pr-4 text-sm"
+            />
+          </form>
+
+          <nav className="mt-4 space-y-2">
             {navLinks.map((link) => (
               <Link
                 key={link.href}
                 href={link.href}
-                className="text-sm text-white/60 transition-colors duration-200 hover:text-white"
+                onClick={() => setMobileOpen(false)}
+                className="block rounded-xl border border-white/8 bg-white/[0.03] px-4 py-3 text-sm font-bold uppercase tracking-[0.12em] text-zinc-200"
               >
                 {link.label}
               </Link>
             ))}
           </nav>
 
-          {/* Actions */}
-          <div className="flex items-center gap-2">
-            <Link
-              href="/#trust"
-              className="hidden items-center gap-1.5 text-sm text-white/60 transition-colors hover:text-white xl:flex"
-            >
-              <Package className="h-4 w-4" />
-              Lacak Pesanan
-            </Link>
-
-            <button className="relative p-2 text-white/60 transition-colors hover:text-white" aria-label="Cart">
-              <ShoppingCart className="h-5 w-5" />
-              <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-cyan-500 text-[10px] font-bold text-white">
-                0
-              </span>
-            </button>
-
+          <div className="mt-4 grid grid-cols-2 gap-2">
             {isLoggedIn ? (
               <>
                 <Link
                   href="/dashboard"
-                  className="hidden items-center gap-1.5 rounded-lg border border-cyan-400/20 bg-cyan-500/10 px-3 py-1.5 text-sm text-cyan-100 transition-all hover:border-cyan-300/40 hover:bg-cyan-500/15 sm:flex"
-                >
-                  <User className="h-4 w-4" />
-                  Dashboard
-                </Link>
-                <button
-                  type="button"
-                  onClick={() => signOut({ callbackUrl: "/" })}
-                  className="hidden items-center gap-1.5 rounded-lg border border-white/10 px-3 py-1.5 text-sm text-white/70 transition-all hover:border-red-400/30 hover:bg-red-500/10 hover:text-red-100 sm:flex"
-                >
-                  <LogOut className="h-4 w-4" />
-                  Keluar
-                </button>
-              </>
-            ) : (
-              <Link
-                href="/login"
-                className="hidden items-center gap-1.5 rounded-lg border border-white/10 px-3 py-1.5 text-sm text-white/70 transition-all hover:border-white/20 hover:text-white sm:flex"
-              >
-                <User className="h-4 w-4" />
-                Masuk
-              </Link>
-            )}
-
-            <Link
-              href="/products"
-              className="hidden items-center gap-1 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 px-4 py-2 text-sm font-medium text-white transition-all duration-200 hover:shadow-lg hover:shadow-cyan-500/25 md:flex"
-            >
-              Lihat Produk
-            </Link>
-
-            <button
-              className="p-2 text-white/60 hover:text-white lg:hidden"
-              onClick={() => setIsOpen(!isOpen)}
-              aria-label="Toggle menu"
-            >
-              {isOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
-            </button>
-          </div>
-        </div>
-      </div>
-
-      {/* Mobile Menu */}
-      <motion.div
-        initial={false}
-        animate={isOpen ? { height: "auto", opacity: 1 } : { height: 0, opacity: 0 }}
-        className="overflow-hidden border-t border-white/5 lg:hidden"
-      >
-        <div className="space-y-2 px-4 py-4">
-          {/* Mobile Search */}
-          <div className="relative mb-3">
-            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-white/40" />
-            <input
-              type="text"
-              placeholder="Cari Netflix, ChatGPT, Canva..."
-              className="w-full rounded-lg border border-white/10 bg-white/5 py-2.5 pl-10 pr-4 text-sm text-white placeholder:text-white/30 focus:border-cyan-500/50 focus:outline-none"
-            />
-          </div>
-
-          {navLinks.map((link) => (
-            <Link
-              key={link.href}
-              href={link.href}
-              className="block rounded-lg py-2 px-3 text-white/70 transition-colors hover:bg-white/5 hover:text-white"
-              onClick={() => setIsOpen(false)}
-            >
-              {link.label}
-            </Link>
-          ))}
-
-          <Link
-            href="/#trust"
-            className="flex items-center gap-2 rounded-lg py-2 px-3 text-white/70 transition-colors hover:bg-white/5 hover:text-white"
-            onClick={() => setIsOpen(false)}
-          >
-            <Package className="h-4 w-4" />
-            Lacak Pesanan
-          </Link>
-
-          <div className="flex gap-2 pt-2">
-            {isLoggedIn ? (
-              <>
-                <Link
-                  href="/dashboard"
-                  className="flex-1 rounded-xl border border-cyan-400/25 bg-cyan-500/10 py-2.5 text-center text-sm font-medium text-cyan-100 transition-colors hover:border-cyan-300/40"
-                  onClick={() => setIsOpen(false)}
+                  onClick={() => setMobileOpen(false)}
+                  className="rounded-xl border border-[#ff6a3d]/40 bg-[#ff6a3d]/10 px-4 py-3 text-center text-xs font-black uppercase tracking-[0.12em] text-white"
                 >
                   Dashboard
                 </Link>
                 <button
                   type="button"
-                  className="flex-1 rounded-xl border border-white/15 py-2.5 text-center text-sm font-medium text-white/80 transition-colors hover:border-red-400/30 hover:bg-red-500/10"
                   onClick={() => {
-                    setIsOpen(false);
+                    setMobileOpen(false);
                     signOut({ callbackUrl: "/" });
                   }}
+                  className="rounded-xl border border-white/10 px-4 py-3 text-center text-xs font-black uppercase tracking-[0.12em] text-zinc-200"
                 >
                   Keluar
                 </button>
@@ -194,22 +179,15 @@ export default function Navbar() {
             ) : (
               <Link
                 href="/login"
-                className="flex-1 rounded-xl border border-white/15 py-2.5 text-center text-sm font-medium text-white/80 transition-colors hover:border-white/25"
-                onClick={() => setIsOpen(false)}
+                onClick={() => setMobileOpen(false)}
+                className="col-span-2 rounded-xl border border-white/10 px-4 py-3 text-center text-xs font-black uppercase tracking-[0.12em] text-zinc-200"
               >
-                Masuk
+                Masuk ke Akun
               </Link>
             )}
-            <Link
-              href="/products"
-              className="flex-1 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 py-2.5 text-center text-sm font-medium text-white"
-              onClick={() => setIsOpen(false)}
-            >
-              Lihat Produk
-            </Link>
           </div>
         </div>
-      </motion.div>
-    </motion.header>
+      )}
+    </header>
   );
 }

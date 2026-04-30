@@ -8,14 +8,14 @@
     --muted: 40 45 60;
     --muted-foreground: 160 168 185;
     
-    /* Accent Colors - Electric blue/cyan primary */
-    --accent: 6 182 212;
-    --accent-blue: 37 99 235;
-    --accent-purple: 124 58 237;
-    --accent-pink: 236 72 153;
-    --accent-cyan: 6 182 212;
-    --accent-emerald: 16 185 129;
-    --accent-orange: 251 146 60;
+    /* Accent Colors - Nebuna dark orange system */
+    --accent: 255 106 61;
+    --accent-blue: 251 146 60;
+    --accent-purple: 194 65 12;
+    --accent-pink: 251 113 133;
+    --accent-cyan: 255 106 61;
+    --accent-emerald: 249 115 22;
+    --accent-orange: 255 106 61;
     --accent-red: 239 68 68;
     
     /* Semantic Colors */
@@ -254,13 +254,13 @@
     text-wrap: pretty;
   }
 
-  /* Animated mesh gradient — used as login page backdrop */
+  /* Animated orange mesh gradient — used as premium backdrop */
   .mesh-bg {
     background-image:
-      radial-gradient(at 18% 22%, rgba(6, 182, 212, 0.22) 0px, transparent 45%),
-      radial-gradient(at 82% 18%, rgba(37, 99, 235, 0.20) 0px, transparent 45%),
-      radial-gradient(at 78% 82%, rgba(124, 58, 237, 0.18) 0px, transparent 50%),
-      radial-gradient(at 22% 78%, rgba(16, 185, 129, 0.18) 0px, transparent 50%);
+      radial-gradient(at 18% 22%, rgba(255, 106, 61, 0.24) 0px, transparent 45%),
+      radial-gradient(at 82% 18%, rgba(251, 146, 60, 0.18) 0px, transparent 45%),
+      radial-gradient(at 78% 82%, rgba(194, 65, 12, 0.14) 0px, transparent 50%),
+      radial-gradient(at 22% 78%, rgba(255, 214, 102, 0.12) 0px, transparent 50%);
     background-size: 200% 200%;
     animation: meshShift 18s ease-in-out infinite;
   }
@@ -329,8 +329,191 @@
     pointer-events: none;
   }
 
+  .nebuna-grid {
+    background-image:
+      linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+    background-size: 48px 48px;
+  }
+
+  .nebuna-shell {
+    position: relative;
+    overflow: hidden;
+    border-radius: 1.5rem;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: rgba(13, 15, 16, 0.82);
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.48);
+    backdrop-filter: blur(18px);
+  }
+
+  .nebuna-shell::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background:
+      radial-gradient(circle at 0% 0%, rgba(255, 106, 61, 0.22), transparent 28%),
+      radial-gradient(circle at 100% 0%, rgba(255, 242, 71, 0.08), transparent 22%);
+    opacity: 0.9;
+    pointer-events: none;
+  }
+
+  .nebuna-ring {
+    box-shadow:
+      inset 0 0 0 1px rgba(255, 106, 61, 0.14),
+      0 0 0 1px rgba(255, 255, 255, 0.02);
+  }
+
+  .nebuna-title {
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: -0.05em;
+    color: white;
+  }
+
+  .nebuna-kicker {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    border-radius: 999px;
+    border: 1px solid rgba(255, 106, 61, 0.26);
+    background: rgba(255, 106, 61, 0.1);
+    padding: 0.5rem 0.85rem;
+    font-size: 0.72rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    color: rgb(255, 137, 95);
+  }
+
+  .nebuna-primary-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.7rem;
+    border-radius: 0.95rem;
+    background: rgb(255, 106, 61);
+    padding: 0.95rem 1.5rem;
+    font-size: 0.8rem;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: white;
+    box-shadow: 0 0 36px rgba(255, 106, 61, 0.22);
+    transition: transform 180ms ease, background 180ms ease, box-shadow 180ms ease;
+  }
+
+  .nebuna-primary-btn:hover {
+    transform: translateY(-1px);
+    background: rgb(255, 124, 84);
+    box-shadow: 0 0 42px rgba(255, 106, 61, 0.28);
+  }
+
+  .nebuna-secondary-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.7rem;
+    border-radius: 0.95rem;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    background: rgba(255, 255, 255, 0.03);
+    padding: 0.95rem 1.5rem;
+    font-size: 0.8rem;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: white;
+    transition: border-color 180ms ease, color 180ms ease, transform 180ms ease;
+  }
+
+  .nebuna-secondary-btn:hover {
+    transform: translateY(-1px);
+    border-color: rgba(255, 106, 61, 0.45);
+    color: rgb(255, 137, 95);
+  }
+
+  .nebuna-input {
+    width: 100%;
+    border-radius: 1rem;
+    border: 1px solid rgba(255,255,255,0.10);
+    background: rgba(255,255,255,0.03);
+    color: white;
+    padding: 0.95rem 1rem 0.95rem 2.75rem;
+    transition: border-color 180ms ease, box-shadow 180ms ease, background 180ms ease;
+  }
+
+  .nebuna-input::placeholder {
+    color: rgba(255,255,255,0.34);
+  }
+
+  .nebuna-input:focus {
+    outline: none;
+    border-color: rgba(255, 106, 61, 0.48);
+    box-shadow: 0 0 0 4px rgba(255, 106, 61, 0.10);
+    background: rgba(255,255,255,0.05);
+  }
+
+  .nebuna-section-pad {
+    padding-top: clamp(3rem, 7vw, 5.5rem);
+    padding-bottom: clamp(3rem, 7vw, 5.5rem);
+  }
+
+  .nebuna-float-sparks {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    pointer-events: none;
+  }
+
+  .nebuna-float-sparks::before,
+  .nebuna-float-sparks::after {
+    content: "";
+    position: absolute;
+    width: 0.38rem;
+    height: 0.38rem;
+    border-radius: 999px;
+    background: rgb(255, 106, 61);
+    box-shadow:
+      160px 80px 0 rgba(255, 106, 61, 0.62),
+      310px 16px 0 rgba(255, 214, 102, 0.54),
+      490px 150px 0 rgba(255, 106, 61, 0.38),
+      760px 44px 0 rgba(255, 214, 102, 0.34),
+      930px 220px 0 rgba(255, 106, 61, 0.42),
+      1120px 98px 0 rgba(255, 106, 61, 0.28);
+    opacity: 0.65;
+    animation: sparkDrift 16s linear infinite;
+  }
+
+  .nebuna-float-sparks::after {
+    top: 42%;
+    left: -4rem;
+    transform: scale(0.72);
+    opacity: 0.42;
+    animation-duration: 22s;
+    animation-direction: reverse;
+  }
+
+  .nebuna-scanline {
+    background-image: linear-gradient(90deg, transparent, rgba(255, 106, 61, 0.3), transparent);
+    background-size: 220% 100%;
+    animation: scanline 5s ease-in-out infinite;
+  }
+
+  .nebuna-tab-active {
+    border-color: rgba(255, 106, 61, 0.55);
+    background: rgba(255, 106, 61, 0.12);
+    color: white;
+    box-shadow: 0 0 24px rgba(255, 106, 61, 0.12);
+  }
+
+  .nebuna-tab-idle {
+    border-color: rgba(255,255,255,0.08);
+    background: rgba(255,255,255,0.03);
+    color: rgba(255,255,255,0.6);
+  }
+
   .float-input > input:focus ~ .field-icon {
-    color: rgba(6, 182, 212, 0.95);
+    color: rgba(255, 106, 61, 0.95);
   }
 
   /* Reduce motion preference */
@@ -375,6 +558,27 @@
   }
   50% {
     transform: translateY(-10px);
+  }
+}
+
+@keyframes sparkDrift {
+  0% {
+    transform: translate3d(-8rem, 0, 0) scale(1);
+  }
+  50% {
+    transform: translate3d(5rem, -1rem, 0) scale(0.92);
+  }
+  100% {
+    transform: translate3d(16rem, 0.5rem, 0) scale(1);
+  }
+}
+
+@keyframes scanline {
+  0%, 100% {
+    background-position: 180% 0;
+  }
+  50% {
+    background-position: -80% 0;
   }
 }
 
