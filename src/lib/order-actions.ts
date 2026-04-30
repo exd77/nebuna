@@ -31,11 +31,18 @@ function makeOrderNumber() {
   return `NB-${stamp}-${rand}`;
 }
 
-function appUrl() {
+function publicAppUrl() {
   return (
-    process.env.AUTH_URL ||
+    process.env.TRIPAY_PUBLIC_BASE_URL ||
     process.env.NEXT_PUBLIC_APP_URL ||
+    process.env.AUTH_URL ||
     "http://localhost:3000"
+  ).replace(/\/$/, "");
+}
+
+function tripayCallbackUrl() {
+  return (
+    process.env.TRIPAY_CALLBACK_URL || `${publicAppUrl()}/api/payments/tripay/webhook`
   ).replace(/\/$/, "");
 }
 
@@ -59,7 +66,7 @@ export async function createCheckoutOrder(formData: FormData): Promise<CheckoutR
   }
 
   const orderNumber = makeOrderNumber();
-  const baseUrl = appUrl();
+  const publicBaseUrl = publicAppUrl();
 
   const payment = await createTripayQrisPayment({
     orderNumber,
@@ -67,8 +74,8 @@ export async function createCheckoutOrder(formData: FormData): Promise<CheckoutR
     amount: product.price,
     customerName: session.user.name || null,
     customerEmail: parsed.data.customerEmail,
-    callbackUrl: `${baseUrl}/api/payments/tripay/webhook`,
-    returnUrl: `${baseUrl}/orders/${orderNumber}`,
+    callbackUrl: tripayCallbackUrl(),
+    returnUrl: `${publicBaseUrl}/orders/${orderNumber}`,
     expiredAt: new Date(Date.now() + 24 * 60 * 60 * 1000),
   });
 

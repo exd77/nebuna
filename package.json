@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "tripay:webhook:test": "node scripts/tripay-webhook-test.mjs"
   },
   "dependencies": {
     "@auth/drizzle-adapter": "^1.11.2",
