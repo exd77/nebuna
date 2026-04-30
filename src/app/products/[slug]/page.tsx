@@ -100,10 +100,13 @@ export default async function ProductDetailPage({
               )}
             </div>
 
-            <button className="mt-4 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-cyan-500/25 transition-all hover:shadow-xl hover:shadow-cyan-500/40 hover:scale-[1.01]">
+            <Link
+              href={`/checkout?product=${product.slug}`}
+              className="mt-4 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-cyan-500/25 transition-all hover:scale-[1.01] hover:shadow-xl hover:shadow-cyan-500/40"
+            >
               <ShoppingCart className="h-4 w-4" />
               Beli Sekarang
-            </button>
+            </Link>
           </div>
 
           {/* Trust line */}

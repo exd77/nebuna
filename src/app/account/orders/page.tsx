@@ -1,30 +1,44 @@
 import Link from "next/link";
-import { redirect } from "next/navigation";
 import { ArrowLeft, Clock3, PackageSearch, ShoppingBag } from "lucide-react";
 
-import { auth } from "@/auth";
+import { getCurrentUserOrders } from "@/lib/order-actions";
+import { formatPrice } from "@/lib/utils";
 
-const placeholderOrders = [
-  {
-    id: "NB-READY-001",
-    product: "ChatGPT Plus",
-    status: "Contoh status",
-    detail: "Order history real akan tampil setelah checkout aktif.",
+const statusLabel: Record<string, { label: string; className: string }> = {
+  pending_payment: {
+    label: "Menunggu pembayaran",
+    className: "border-amber-400/20 bg-amber-500/10 text-amber-200",
   },
-  {
-    id: "NB-READY-002",
-    product: "Netflix Premium",
-    status: "Contoh status",
-    detail: "Gunakan halaman ini sebagai pusat tracking pesanan user.",
+  processing: {
+    label: "Diproses",
+    className: "border-cyan-400/20 bg-cyan-500/10 text-cyan-200",
   },
-];
+  completed: {
+    label: "Selesai",
+    className: "border-emerald-400/20 bg-emerald-500/10 text-emerald-200",
+  },
+  cancelled: {
+    label: "Dibatalkan",
+    className: "border-red-400/20 bg-red-500/10 text-red-200",
+  },
+};
 
-export default async function AccountOrdersPage() {
-  const session = await auth();
+const paymentLabel: Record<string, string> = {
+  qris: "QRIS",
+  bca_va: "BCA VA",
+  gopay: "GoPay",
+  ovo: "OVO",
+  dana: "DANA",
+  shopeepay: "ShopeePay",
+};
 
-  if (!session?.user) {
-    redirect("/login?callbackUrl=/account/orders");
-  }
+export default async function AccountOrdersPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ created?: string }>;
+}) {
+  const orders = await getCurrentUserOrders();
+  const { created } = await searchParams;
 
   return (
     <section className="relative overflow-hidden pt-28 pb-20">
@@ -50,8 +64,7 @@ export default async function AccountOrdersPage() {
                 Pesanan Saya
               </h1>
               <p className="mt-3 max-w-2xl text-sm leading-6 text-white/55">
-                Area ini disiapkan untuk tracking aktivasi, pengiriman akun,
-                replacement, dan riwayat transaksi Nebuna Store.
+                Pantau status pembayaran, aktivasi, dan pengiriman produk digital Nebuna Store.
               </p>
             </div>
             <div className="rounded-2xl border border-emerald-400/20 bg-emerald-500/10 px-4 py-3 text-sm font-semibold text-emerald-200">
@@ -59,42 +72,74 @@ export default async function AccountOrdersPage() {
             </div>
           </div>
 
-          <div className="mt-8 rounded-3xl border border-dashed border-white/15 bg-black/20 p-8 text-center">
-            <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-3xl border border-white/10 bg-white/[0.04] text-cyan-200">
-              <PackageSearch className="h-8 w-8" />
+          {created && (
+            <div className="mt-6 rounded-2xl border border-emerald-400/25 bg-emerald-500/10 p-4 text-sm text-emerald-100">
+              Order <span className="font-bold">{created}</span> berhasil dibuat. Silakan lanjutkan pembayaran sesuai instruksi support/payment gateway.
             </div>
-            <h2 className="mt-5 text-xl font-bold text-white">Belum ada pesanan real</h2>
-            <p className="mx-auto mt-2 max-w-lg text-sm leading-6 text-white/55">
-              Setelah checkout flow tersambung ke backend/payment provider,
-              pesanan user akan muncul di sini lengkap dengan status dan detail aktivasi.
-            </p>
-            <Link
-              href="/products"
-              className="mt-6 inline-flex items-center justify-center rounded-2xl bg-gradient-to-r from-cyan-500 to-blue-600 px-5 py-3 text-sm font-bold text-white shadow-lg shadow-cyan-500/20"
-            >
-              Cari Produk
-            </Link>
-          </div>
+          )}
 
-          <div className="mt-6 grid gap-3 md:grid-cols-2">
-            {placeholderOrders.map((order) => (
-              <div key={order.id} className="rounded-2xl border border-white/10 bg-black/20 p-4">
-                <div className="flex items-center justify-between gap-3">
-                  <div>
-                    <p className="text-xs font-semibold uppercase tracking-wider text-white/35">
-                      {order.id}
-                    </p>
-                    <h3 className="mt-1 font-bold text-white">{order.product}</h3>
-                  </div>
-                  <span className="inline-flex items-center gap-1.5 rounded-full border border-amber-400/20 bg-amber-500/10 px-3 py-1 text-xs font-semibold text-amber-200">
-                    <Clock3 className="h-3.5 w-3.5" />
-                    {order.status}
-                  </span>
-                </div>
-                <p className="mt-3 text-sm leading-6 text-white/50">{order.detail}</p>
+          {orders.length === 0 ? (
+            <div className="mt-8 rounded-3xl border border-dashed border-white/15 bg-black/20 p-8 text-center">
+              <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-3xl border border-white/10 bg-white/[0.04] text-cyan-200">
+                <PackageSearch className="h-8 w-8" />
               </div>
-            ))}
-          </div>
+              <h2 className="mt-5 text-xl font-bold text-white">Belum ada pesanan</h2>
+              <p className="mx-auto mt-2 max-w-lg text-sm leading-6 text-white/55">
+                Checkout produk pertamamu, lalu order akan muncul di sini lengkap dengan status dan detail aktivasi.
+              </p>
+              <Link
+                href="/products"
+                className="mt-6 inline-flex items-center justify-center rounded-2xl bg-gradient-to-r from-cyan-500 to-blue-600 px-5 py-3 text-sm font-bold text-white shadow-lg shadow-cyan-500/20"
+              >
+                Cari Produk
+              </Link>
+            </div>
+          ) : (
+            <div className="mt-8 grid gap-3">
+              {orders.map((order) => {
+                const status = statusLabel[order.status] ?? statusLabel.pending_payment;
+                return (
+                  <div key={order.id} className="rounded-2xl border border-white/10 bg-black/20 p-4">
+                    <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
+                      <div>
+                        <p className="text-xs font-semibold uppercase tracking-wider text-white/35">
+                          {order.orderNumber}
+                        </p>
+                        <h3 className="mt-1 text-lg font-bold text-white">{order.productName}</h3>
+                        <p className="mt-2 text-sm text-white/50">
+                          Tujuan: {order.customerEmail}
+                          {order.accountIdentifier ? ` · ${order.accountIdentifier}` : ""}
+                        </p>
+                      </div>
+                      <span className={`inline-flex w-fit items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-semibold ${status.className}`}>
+                        <Clock3 className="h-3.5 w-3.5" />
+                        {status.label}
+                      </span>
+                    </div>
+
+                    <div className="mt-4 grid gap-3 border-t border-white/5 pt-4 text-sm sm:grid-cols-3">
+                      <div>
+                        <p className="text-xs uppercase tracking-wider text-white/35">Total</p>
+                        <p className="mt-1 font-bold text-white">{formatPrice(order.amount)}</p>
+                      </div>
+                      <div>
+                        <p className="text-xs uppercase tracking-wider text-white/35">Pembayaran</p>
+                        <p className="mt-1 font-bold text-white">{paymentLabel[order.paymentMethod] ?? order.paymentMethod}</p>
+                      </div>
+                      <div>
+                        <p className="text-xs uppercase tracking-wider text-white/35">Tanggal</p>
+                        <p className="mt-1 font-bold text-white">
+                          {order.createdAt.toLocaleDateString("id-ID", { day: "2-digit", month: "short", year: "numeric" })}
+                        </p>
+                      </div>
+                    </div>
+
+                    {order.notes && <p className="mt-4 text-sm leading-6 text-white/45">Catatan: {order.notes}</p>}
+                  </div>
+                );
+              })}
+            </div>
+          )}
         </div>
       </div>
     </section>

@@ -72,6 +72,45 @@ export const verificationTokens = sqliteTable(
   ],
 );
 
+export const passwordResetTokens = sqliteTable("password_reset_token", {
+  id: text("id")
+    .primaryKey()
+    .$defaultFn(() => crypto.randomUUID()),
+  userId: text("user_id")
+    .notNull()
+    .references(() => users.id, { onDelete: "cascade" }),
+  tokenHash: text("token_hash").notNull().unique(),
+  expiresAt: integer("expires_at", { mode: "timestamp_ms" }).notNull(),
+  usedAt: integer("used_at", { mode: "timestamp_ms" }),
+  createdAt: integer("created_at", { mode: "timestamp_ms" })
+    .notNull()
+    .default(sql`(unixepoch() * 1000)`),
+});
+
+export const orders = sqliteTable("order", {
+  id: text("id")
+    .primaryKey()
+    .$defaultFn(() => crypto.randomUUID()),
+  orderNumber: text("order_number").notNull().unique(),
+  userId: text("user_id")
+    .notNull()
+    .references(() => users.id, { onDelete: "cascade" }),
+  productSlug: text("product_slug").notNull(),
+  productName: text("product_name").notNull(),
+  amount: integer("amount").notNull(),
+  customerEmail: text("customer_email").notNull(),
+  accountIdentifier: text("account_identifier"),
+  notes: text("notes"),
+  paymentMethod: text("payment_method").notNull().default("qris"),
+  status: text("status").notNull().default("pending_payment"),
+  createdAt: integer("created_at", { mode: "timestamp_ms" })
+    .notNull()
+    .default(sql`(unixepoch() * 1000)`),
+  updatedAt: integer("updated_at", { mode: "timestamp_ms" })
+    .notNull()
+    .default(sql`(unixepoch() * 1000)`),
+});
+
 export const authenticators = sqliteTable(
   "authenticator",
   {
@@ -97,3 +136,6 @@ export const authenticators = sqliteTable(
 
 export type User = typeof users.$inferSelect;
 export type NewUser = typeof users.$inferInsert;
+export type Order = typeof orders.$inferSelect;
+export type NewOrder = typeof orders.$inferInsert;
+export type PasswordResetToken = typeof passwordResetTokens.$inferSelect;

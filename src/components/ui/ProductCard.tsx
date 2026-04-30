@@ -121,13 +121,14 @@ export default function ProductCard({ product }: ProductCardProps) {
             >
               <Eye className="h-4 w-4" />
             </Link>
-            <button
+            <Link
+              href={`/checkout?product=${product.slug}`}
               className="inline-flex h-9 items-center gap-1.5 rounded-lg bg-gradient-to-r from-cyan-500 to-blue-600 px-3 text-xs font-semibold text-white shadow-md shadow-cyan-500/20 transition-all hover:shadow-lg hover:shadow-cyan-500/30"
               aria-label="Beli"
             >
               <ShoppingCart className="h-3.5 w-3.5" />
               Beli
-            </button>
+            </Link>
           </div>
         </div>
       </div>

@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
+import { signIn } from "next-auth/react";
 import {
   Package,
   Mail,
@@ -979,35 +980,29 @@ function SocialLogin() {
       icon: <GoogleIcon className="h-4 w-4" />,
     },
     {
-      key: "whatsapp",
-      label: "WhatsApp",
-      hover: "hover:border-emerald-400/40 hover:bg-emerald-500/10",
-      icon: <WhatsappIcon className="h-4 w-4 text-emerald-400" />,
-    },
-    {
       key: "discord",
       label: "Discord",
       hover: "hover:border-indigo-400/40 hover:bg-indigo-500/10",
       icon: <DiscordIcon className="h-4 w-4 text-indigo-300" />,
     },
     {
-      key: "apple",
-      label: "Apple",
+      key: "github",
+      label: "GitHub",
       hover: "hover:border-white/30 hover:bg-white/[0.06]",
-      icon: <AppleIcon className="h-4 w-4 text-white" />,
+      icon: <GithubIcon className="h-4 w-4 text-white" />,
     },
   ];
 
   return (
     <div className="space-y-2">
-      <div className="grid grid-cols-2 gap-2">
+      <div className="grid grid-cols-3 gap-2">
         {providers.map((p) => (
           <button
             key={p.key}
             type="button"
-            disabled
-            title="Social login belum aktif"
-            className="flex cursor-not-allowed items-center justify-center gap-2 rounded-xl border border-white/10 bg-white/[0.02] py-2.5 text-xs font-semibold text-white/35 opacity-70 transition-all"
+            onClick={() => signIn(p.key, { callbackUrl: "/dashboard" })}
+            title="OAuth aktif jika environment provider sudah dikonfigurasi"
+            className={`flex items-center justify-center gap-2 rounded-xl border border-white/10 bg-white/[0.03] py-2.5 text-xs font-semibold text-white/80 transition-all ${p.hover}`}
           >
             {p.icon}
             {p.label}
@@ -1015,7 +1010,7 @@ function SocialLogin() {
         ))}
       </div>
       <p className="text-center text-[11px] text-white/35">
-        Social login belum aktif — gunakan email dan password dulu.
+        OAuth Google/Discord/GitHub aktif setelah env provider di-set.
       </p>
     </div>
   );
@@ -1049,14 +1044,6 @@ function GoogleIcon({ className }: { className?: string }) {
   );
 }
 
-function WhatsappIcon({ className }: { className?: string }) {
-  return (
-    <svg viewBox="0 0 24 24" className={className} aria-hidden="true" fill="currentColor">
-      <path d="M.057 24l1.687-6.163a11.867 11.867 0 01-1.587-5.946C.16 5.335 5.495 0 12.05 0a11.817 11.817 0 018.413 3.488 11.824 11.824 0 013.48 8.414c-.003 6.557-5.338 11.892-11.893 11.892a11.9 11.9 0 01-5.688-1.448L.057 24zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884a9.86 9.86 0 001.518 5.26l-.999 3.648 3.97-1.04zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.149-.669-1.611-.916-2.207-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z" />
-    </svg>
-  );
-}
-
 function DiscordIcon({ className }: { className?: string }) {
   return (
     <svg viewBox="0 0 24 24" className={className} aria-hidden="true" fill="currentColor">
@@ -1065,10 +1052,10 @@ function DiscordIcon({ className }: { className?: string }) {
   );
 }
 
-function AppleIcon({ className }: { className?: string }) {
+function GithubIcon({ className }: { className?: string }) {
   return (
     <svg viewBox="0 0 24 24" className={className} aria-hidden="true" fill="currentColor">
-      <path d="M17.05 20.28c-.98.95-2.05.8-3.08.35-1.09-.46-2.09-.48-3.24 0-1.44.62-2.2.44-3.06-.35C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.8 1.18-.24 2.31-.93 3.57-.84 1.51.12 2.65.72 3.4 1.8-3.12 1.87-2.38 5.98.48 7.13-.57 1.5-1.31 2.99-2.54 4.08zM12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.5-3.74 4.25z" />
+      <path d="M12 .5C5.65.5.5 5.65.5 12c0 5.09 3.29 9.39 7.86 10.91.58.11.79-.25.79-.56v-2.15c-3.2.7-3.87-1.36-3.87-1.36-.52-1.33-1.28-1.69-1.28-1.69-1.05-.72.08-.71.08-.71 1.16.08 1.77 1.19 1.77 1.19 1.03 1.76 2.7 1.25 3.36.96.1-.75.4-1.25.73-1.54-2.55-.29-5.24-1.28-5.24-5.69 0-1.26.45-2.29 1.19-3.09-.12-.29-.52-1.46.11-3.05 0 0 .98-.31 3.18 1.18A11.1 11.1 0 0112 6.02c.98 0 1.96.13 2.88.38 2.2-1.49 3.17-1.18 3.17-1.18.64 1.59.24 2.76.12 3.05.74.8 1.18 1.83 1.18 3.09 0 4.42-2.69 5.39-5.25 5.68.42.36.79 1.07.79 2.16v3.15c0 .31.21.67.8.56A11.5 11.5 0 0023.5 12C23.5 5.65 18.35.5 12 .5z" />
     </svg>
   );
 }

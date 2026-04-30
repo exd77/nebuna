@@ -13,12 +13,7 @@ import {
 } from "lucide-react";
 
 import { auth } from "@/auth";
-
-const quickStats = [
-  { label: "Pesanan aktif", value: "0", icon: ShoppingBag },
-  { label: "Menunggu aktivasi", value: "0", icon: Clock3 },
-  { label: "Produk selesai", value: "0", icon: PackageCheck },
-];
+import { getCurrentUserOrders } from "@/lib/order-actions";
 
 const nextSteps = [
   "Pilih produk digital premium yang kamu butuhkan.",
@@ -34,6 +29,20 @@ export default async function DashboardPage() {
   }
 
   const displayName = session.user.name || session.user.email || "Nebuna user";
+  const orders = await getCurrentUserOrders(50);
+  const quickStats = [
+    { label: "Pesanan aktif", value: String(orders.length), icon: ShoppingBag },
+    {
+      label: "Menunggu aktivasi",
+      value: String(orders.filter((order) => order.status !== "completed" && order.status !== "cancelled").length),
+      icon: Clock3,
+    },
+    {
+      label: "Produk selesai",
+      value: String(orders.filter((order) => order.status === "completed").length),
+      icon: PackageCheck,
+    },
+  ];
 
   return (
     <section className="relative overflow-hidden pt-28 pb-20">
