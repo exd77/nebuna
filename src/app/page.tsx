@@ -115,46 +115,55 @@ export default function HomePage() {
             </div>
           </div>
 
-          <div className="nebuna-shell nebuna-ring p-5 lg:p-7">
+          <div className="nebuna-shell nebuna-ring w-full max-w-[580px] justify-self-center p-5 sm:p-6 lg:justify-self-end lg:p-7">
             <div className="relative">
-              <div className="mb-5 flex items-center justify-between gap-3">
-                <div>
-                  <p className="text-sm font-black uppercase tracking-[0.18em] text-[#ff6a3d]">
+              <div className="mb-5 flex items-start justify-between gap-4">
+                <div className="min-w-0">
+                  <p className="whitespace-nowrap text-sm font-black uppercase tracking-[0.18em] text-[#ff6a3d] sm:text-base">
                     Produk Unggulan
                   </p>
-                  <p className="mt-1 text-sm text-zinc-400">Paling sering dicari minggu ini</p>
+                  <p className="mt-1 max-w-[220px] text-sm leading-5 text-zinc-400 sm:max-w-none">
+                    Paling sering dicari minggu ini
+                  </p>
                 </div>
-                <span className="rounded-full border border-yellow-300/20 bg-yellow-300/10 px-3 py-1 text-[11px] font-black uppercase tracking-[0.14em] text-yellow-200">
+                <span className="shrink-0 rounded-full border border-yellow-300/20 bg-yellow-300/10 px-3 py-1.5 text-[10px] font-black uppercase tracking-[0.14em] text-yellow-200 sm:text-[11px]">
                   Ready Stock
                 </span>
               </div>
 
-              <div className="grid gap-3 sm:grid-cols-2">
+              <div className="grid grid-cols-1 gap-3 min-[520px]:grid-cols-2">
                 {featured.map((product) => (
                   <Link
                     key={product.slug}
                     href={`/products/${product.slug}`}
-                    className="group flex items-center gap-3 rounded-2xl border border-white/10 bg-white/[0.03] p-3 transition hover:border-[#ff6a3d]/40 hover:bg-[#ff6a3d]/10"
+                    className="group flex min-h-[104px] min-w-0 items-center gap-3 rounded-2xl border border-white/10 bg-white/[0.035] p-3.5 transition hover:border-[#ff6a3d]/40 hover:bg-[#ff6a3d]/10"
                   >
-                    <ProductIcon slug={product.slug} size="md" />
-                    <div>
-                      <p className="font-bold text-white">{product.name}</p>
-                      <p className="text-xs text-zinc-500">Mulai dari</p>
-                      <p className="font-black text-white">{formatPrice(product.price)}</p>
+                    <ProductIcon slug={product.slug} size="md" className="shrink-0" />
+                    <div className="min-w-0 flex-1">
+                      <p className="line-clamp-2 text-sm font-black leading-tight text-white sm:text-[15px]">
+                        {product.name}
+                      </p>
+                      <p className="mt-1 text-xs text-zinc-500">Mulai dari</p>
+                      <p className="mt-0.5 whitespace-nowrap text-sm font-black text-white sm:text-base">
+                        {formatPrice(product.price)}
+                      </p>
                     </div>
                   </Link>
                 ))}
               </div>
 
-              <div className="mt-6 grid grid-cols-3 gap-3 border-t border-white/10 pt-5 text-center">
+              <div className="mt-6 grid grid-cols-3 gap-2 border-t border-white/10 pt-5 text-center sm:gap-3">
                 {[
                   { icon: Zap, label: "Instan" },
                   { icon: ShieldCheck, label: "Aman" },
                   { icon: Star, label: "Terpercaya" },
                 ].map(({ icon: Icon, label }) => (
-                  <div key={label} className="flex flex-col items-center gap-2 text-xs font-black uppercase tracking-[0.12em] text-zinc-300">
-                    <Icon className="h-5 w-5 text-[#ff6a3d]" />
-                    {label}
+                  <div
+                    key={label}
+                    className="flex min-w-0 flex-col items-center gap-2 rounded-2xl border border-white/8 bg-white/[0.025] px-2 py-3 text-[10px] font-black uppercase tracking-[0.12em] text-zinc-300 sm:text-xs"
+                  >
+                    <Icon className="h-5 w-5 shrink-0 text-[#ff6a3d]" />
+                    <span className="truncate">{label}</span>
                   </div>
                 ))}
               </div>
